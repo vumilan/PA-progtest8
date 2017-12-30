@@ -17,54 +17,49 @@ TEMPLOYEE        * newEmployee  ( const char      * name,
   TEMPLOYEE * l;
   char * new_name;
 
-  new_name = (char*) malloc ( sizeof ( char ) );
+  new_name = (char*) malloc ( sizeof ( *new_name ) );
   strcpy(new_name, name);
   l = (TEMPLOYEE*) malloc ( sizeof ( *l ) );
   l -> m_Next = m_Next;
-  l -> m_Bak = NULL;
+  l -> m_Bak  = NULL;
   l -> m_Name = new_name;
   return l;
 }
 TEMPLOYEE        * cloneList    ( TEMPLOYEE       * src ) {
-  if (src == NULL) return NULL;
+  if ( src == NULL ) return NULL;
 
-  TEMPLOYEE *copy_list,*temp,*temp2;
-    temp = src;
-    //Step 1
-    while(temp!=NULL)
-    {
-         TEMPLOYEE* newnode = newEmployee(temp->m_Name, NULL);
-         temp2 = temp->m_Next;
-         temp->m_Next = newnode;
-         newnode->m_Next = temp2;
-         temp = temp->m_Next->m_Next;
-    }
+  TEMPLOYEE * copy_list, * tmp, * tmp2;
+  tmp = src;
 
-    temp = src;
+  while ( tmp != NULL ) {
+    TEMPLOYEE * newnode = newEmployee ( tmp -> m_Name, NULL );
+    tmp2 = tmp -> m_Next;
+    tmp -> m_Next = newnode;
+    newnode -> m_Next = tmp2;
+    tmp = tmp -> m_Next -> m_Next;
+  }
 
-    //Step 2
-    while ( temp != NULL && temp->m_Next != NULL )
-    {
-      if ( temp->m_Bak == NULL )
-        temp->m_Next->m_Bak = NULL;
-      else
-        temp->m_Next->m_Bak = temp->m_Bak->m_Next;
-      temp = temp->m_Next->m_Next;
-    }
+  tmp = src;
 
-    //Step 3
-    temp = src;
-    copy_list = temp->m_Next;
-    while(temp != NULL)
-    {
-        temp2 = temp->m_Next;
-        if(temp->m_Next != NULL)
-            temp->m_Next = temp->m_Next->m_Next;
-        if(temp2->m_Next != NULL)
-            temp2->m_Next = temp2->m_Next->m_Next;
-        temp = temp->m_Next;
-    }
-    return copy_list;
+  while ( tmp != NULL ) {
+    if ( tmp -> m_Bak == NULL )
+      tmp -> m_Next -> m_Bak = NULL;
+    else
+      tmp -> m_Next -> m_Bak = tmp -> m_Bak -> m_Next;
+    tmp = tmp -> m_Next -> m_Next;
+  }
+
+  tmp = src;
+  copy_list = tmp -> m_Next;
+  while ( tmp != NULL ) {
+    tmp2 = tmp -> m_Next;
+    if ( tmp -> m_Next != NULL )
+      tmp -> m_Next = tmp->m_Next->m_Next;
+    if ( tmp2 -> m_Next != NULL )
+      tmp2 -> m_Next = tmp2 -> m_Next -> m_Next;
+    tmp = tmp -> m_Next;
+  }
+  return copy_list;
 }
 
 
@@ -76,8 +71,8 @@ void               freeList     ( TEMPLOYEE       * src )
   while ( src )
   {
     tmp = src;
-    src = src->m_Next;
-    free(tmp);
+    src = src -> m_Next;
+    free ( tmp );
   }
 }
 
